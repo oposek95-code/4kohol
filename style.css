@@ -1,0 +1,206 @@
+body {
+    font-family: arial,helvetica,sans-serif;
+    font-size: 10pt;
+    background: #EEF2FF url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4AkEEjYvrxBO+QAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAABASURBVGje7dexDQAgDAPBDxv1/kNRUKaiQshJrqM6yXLqYrB6R6KNW29uZF/tfiuJKgAAAAAAAAAAAAAAAPyzATkxAgGBWuhYAAAAAElFTkSuQmCC');
+    color: #000000;
+    margin: 0;
+    padding: 12px;
+    line-height: 1.4;
+}
+
+header {
+    text-align: center;
+    padding: 15px;
+    margin-bottom: 25px;
+    background: rgba(214, 218, 240, 0.8);
+    border: 1px solid #B7C5D9;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+h1 {
+    color: #AF0A0F;
+    font-size: 32px;
+    font-weight: bold;
+    margin: 0;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.2);
+    letter-spacing: -1px;
+}
+
+.subtitle {
+    color: #000000;
+    margin: 5px 0;
+}
+
+#user-status {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 0.9em;
+}
+
+#user-status a {
+    color: #34345C;
+    text-decoration: none;
+}
+
+#user-status a:hover {
+    color: #ff0000;
+}
+
+main {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Auth Forms */
+.auth-container {
+    background: #D6DAF0;
+    border: 1px solid #B7C5D9;
+    border-radius: 3px;
+    padding: 25px;
+    max-width: 400px;
+    margin: 25px auto;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.auth-container .form-group {
+    margin-bottom: 12px;
+    position: relative;
+}
+
+.auth-container label {
+    display: block;
+    margin-bottom: 6px;
+    color: #000000;
+    font-weight: bold;
+}
+
+.auth-container input {
+    font-family: arial,helvetica,sans-serif;
+    font-size: 11pt;
+    width: 100%;
+    padding: 6px 10px;
+    background: #FFFFFF;
+    border: 1px solid #B7C5D9;
+    border-radius: 3px;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.auth-container input:focus {
+    outline: none;
+    border-color: #34345C;
+    box-shadow: 0 0 0 2px rgba(52, 52, 92, 0.2);
+}
+
+.auth-container button {
+    background: #34345C;
+    border: 1px solid #1d1d36;
+    border-radius: 3px;
+    padding: 8px 16px;
+    color: #FFFFFF;
+    cursor: pointer;
+    margin-top: 12px;
+    font-family: arial,helvetica,sans-serif;
+    font-size: 11pt;
+    font-weight: bold;
+    width: 100%;
+    transition: background-color 0.2s;
+}
+
+.auth-container button:hover {
+    background: #B7C5D9;
+}
+
+.auth-container #message {
+    margin-top: 8px;
+    text-align: center;
+    color: #AF0A0F;
+}
+
+/* Lista boardów */
+.board-list {
+    background: #D6DAF0;
+    border: 1px solid #B7C5D9;
+    border-radius: 3px;
+    padding: 15px;
+    margin: 15px auto;
+    max-width: 900px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.board-list h2 {
+    color: #AF0A0F;
+    margin: 0 0 15px 0;
+    font-size: 18px;
+    border-bottom: 2px solid #B7C5D9;
+    padding-bottom: 8px;
+}
+
+.board-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    column-count: 3;
+    column-gap: 30px;
+}
+
+.board-list li {
+    padding: 5px 8px;
+    margin: 2px 0;
+    border-radius: 2px;
+    transition: background-color 0.2s;
+}
+
+.board-list li:hover {
+    background-color: #B7C5D9;
+}
+
+/* Ukryte boardy z animacją */
+.hidden-boards-card {
+    background: #D6DAF0;
+    border: 1px solid #B7C5D9;
+    border-radius: 3px;
+    margin: 15px auto;
+    max-width: 900px;
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.hidden-boards-card.visible {
+    max-height: 800px;
+    opacity: 1;
+    transform: translateY(0);
+    padding: 15px;
+}
+
+.hidden-boards-card h3 {
+    color: #AF0A0F;
+    margin: 0 0 15px 0;
+    font-size: 16px;
+    border-bottom: 2px solid #B7C5D9;
+    padding-bottom: 8px;
+}
+
+/* Tabela adminów */
+#users-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    background: #D6DAF0;
+}
+
+#users-table th, #users-table td {
+    border: 1px solid #B7C5D9;
+    padding: 6px 8px;
+    text-align: left;
+}
+
+#users-table thead {
+    background: #B7C5D9;
+}

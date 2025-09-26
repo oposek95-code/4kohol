@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Administratora</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Panel Administratora</h1>
+        <div id="user-status"></div>
+    </header>
+    <main>
+        <h2>Zarządzanie Użytkownikami</h2>
+        <div id="admin-content">
+            <p>Sprawdzanie uprawnień...</p>
+            <table id="users-table" class="hidden">
+                <thead>
+                    <tr>
+                        <th>Nazwa użytkownika</th>
+                        <th>Rola</th>
+                        <th>Ranga</th>
+                        <th>Doświadczenie</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dane użytkowników zostaną wstawione tutaj przez JS -->
+                </tbody>
+            </table>
+        </div>
+        <a href="index.html">Powrót do strony głównej</a>
+    </main>
+    <script src="auth.js"></script>
+</body>
+</html>
