@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ddos-serverow-aternos</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <header>
+        <h1>Symulator Ataku DDoS v1.3.3.7</h1>
+        <div id="user-status"></div>
+    </header>
+    <main>
+        <p>Użyj najnowocześniejszej technologii, aby... zobaczyć fajne animacje. Ten symulator jest w 100% bezpieczny i nie wykonuje żadnych prawdziwych działań sieciowych.</p>
+        
+        <div class="attack-container">
+            <div class="form-group">
+                <label for="target-ip">Cel (wpisz cokolwiek):</label>
+                <input type="text" id="target-ip" value="aternos.org">
+            </div>
+            <button id="launch-attack-btn">Uruchom Atak</button>
+
+            <div id="attack-progress" class="hidden">
+                <h3>Postęp Ataku:</h3>
+                <div class="progress-bar-container">
+                    <div id="progress-bar" style="width: 0%;"></div>
+                </div>
+                <div id="console-log">
+                    <p>Gotowy do działania...</p>
+                </div>
+            </div>
+        </div>
+
+        <a href="../index.html">Powrót do strony głównej</a>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const launchBtn = document.getElementById('launch-attack-btn');
+            const attackProgress = document.getElementById('attack-progress');
+            const progressBar = document.getElementById('progress-bar');
+            const consoleLog = document.getElementById('console-log');
+            const targetIpInput = document.getElementById('target-ip');
+
+            const fakeLogs = [
+                "Inicjowanie botnetu 'Kanapka z Szynką'...",
+                "Wysyłanie pakietów PING... ale tak bardziej...",
+                "Przekierowywanie mocy z tostera...",
+                "Synchronizacja z rosyjskimi satelitami (przez modem 56k)...",
+                "Znaleziono otwarty port: 21 (FTP - File Transfer Paprykarz)...",
+                "Próba przepełnienia bufora za pomocą ASCII art...",
+                "Firewall wykrył nas! Wysyłanie zdjęć kotów w celu dekoncentracji...",
+                "Zwiększanie mocy... Podłączono kalkulator sąsiada.",
+                "Udało się! Serwer odpowiada komunikatem: 'Proszę, przestańcie'.",
+                "Krytyczny sukces! Admin serwera idzie na przerwę na kawę."
+            ];
+
+            launchBtn.addEventListener('click', () => {
+                const target = targetIpInput.value;
+                if (!target) {
+                    alert("Musisz podać cel!");
+                    return;
+                }
+
+                launchBtn.disabled = true;
+                launchBtn.textContent = "Atak w toku...";
+                attackProgress.classList.remove('hidden');
+                consoleLog.innerHTML = `<p>Rozpoczynanie ataku na ${target}...</p>`;
+                progressBar.style.width = '0%';
+
+                let progress = 0;
+                let logIndex = 0;
+
+                const interval = setInterval(() => {
+                    progress += Math.random() * 10;
+                    if (progress > 100) {
+                        progress = 100;
+                    }
+                    progressBar.style.width = progress + '%';
+
+                    if (logIndex < fakeLogs.length && Math.random() > 0.4) {
+                        const newLog = document.createElement('p');
+                        newLog.textContent = `[${new Date().toLocaleTimeString()}] ${fakeLogs[logIndex]}`;
+                        consoleLog.appendChild(newLog);
+                        consoleLog.scrollTop = consoleLog.scrollHeight;
+                        logIndex++;
+                    }
+
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        const successLog = document.createElement('p');
+                        successLog.style.color = '#0f0';
+                        successLog.textContent = `ATAK ZAKOŃCZONY SUKCESEM! Serwer ${target} został zneutralizowany (na niby).`;
+                        consoleLog.appendChild(successLog);
+                        consoleLog.scrollTop = consoleLog.scrollHeight;
+                        launchBtn.textContent = "Uruchom Ponownie";
+                        launchBtn.disabled = false;
+                    }
+                }, 700);
+            });
+        });
+    </script>
+    <script src="../auth.js"></script>
+    <style>
+        .attack-container { text-align: center; background: #1a1a1a; padding: 20px; border-radius: 8px; border: 1px solid #333; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { margin-right: 10px; color: #ccc; }
+        .form-group input { background: #333; border: 1px solid #555; color: #fff; padding: 5px; }
+        #launch-attack-btn { background-color: #AF0A0F; color: white; border: none; padding: 10px 20px; font-size: 1.2em; cursor: pointer; border-radius: 5px; }
+        #launch-attack-btn:disabled { background-color: #555; cursor: not-allowed; }
+        #attack-progress { margin-top: 20px; }
+        .progress-bar-container { background: #333; border-radius: 5px; overflow: hidden; }
+        #progress-bar { width: 0; height: 20px; background: linear-gradient(90deg, #AF0A0F, #ff4d4d); transition: width 0.5s ease-in-out; }
+        #console-log { margin-top: 15px; background: #000; height: 200px; overflow-y: scroll; text-align: left; padding: 10px; font-family: 'Courier New', Courier, monospace; color: #0f0; border: 1px solid #333; }
+        #console-log p { margin: 0 0 5px; }
+    </style>
+</body>
+</html>

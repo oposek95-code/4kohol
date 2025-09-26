@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>lista-pandziakow</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <header>
+        <h1>Generator Listy Pandziaków</h1>
+        <div id="user-status"></div>
+        <h2>Stwórz swoją unikalną listę!</h2>
+    </header>
+    <main>
+        <p>Masz dość nudnych list? Wygeneruj listę najbardziej epickich pandziaków w internecie. Każda lista jest unikalna i certyfikowana przez Światowy Instytut Słodyczy.</p>
+        
+        <div class="generator-container">
+            <button id="generate-btn">Wygeneruj Nową Listę</button>
+            
+            <div id="list-output" class="hidden">
+                <h3>Twoja Ekskluzywna Lista Pandziaków:</h3>
+                <ul id="panda-list">
+                    <!-- Pandas will be generated here -->
+                </ul>
+            </div>
+        </div>
+
+        <a href="../index.html">Powrót do strony głównej</a>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const generateBtn = document.getElementById('generate-btn');
+            const listOutput = document.getElementById('list-output');
+            const pandaList = document.getElementById('panda-list');
+
+            const prefixes = ["Puszysty", "Bambusowy", "Śpiący", "Turlający się", "Wesoły", "Głodny", "Zwinny", "Mądry", "Tajemniczy"];
+            const names = ["Bao Bao", "Mei Xiang", "Tian Tian", "Bei Bei", "Xiao Liwu", "Po", "Ling-Ling", "Hsing-Hsing", "Gu Gu"];
+            const suffixes = ["Niszczyciel", "Marzyciel", "Wojownik", "Filozof", "Smakosz", "Podróżnik", "Artysta", "Odkrywca"];
+
+            const getRandomElement = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+            generateBtn.addEventListener('click', () => {
+                pandaList.innerHTML = ''; // Clear previous list
+                const listSize = Math.floor(Math.random() * 5) + 3; // Generate 3 to 7 pandas
+
+                for (let i = 0; i < listSize; i++) {
+                    const prefix = getRandomElement(prefixes);
+                    const name = getRandomElement(names);
+                    const suffix = getRandomElement(suffixes);
+                    const pandaName = `${prefix} ${name} "${suffix}"`;
+                    
+                    const listItem = document.createElement('li');
+                    listItem.textContent = pandaName;
+                    pandaList.appendChild(listItem);
+                }
+
+                listOutput.classList.remove('hidden');
+            });
+        });
+    </script>
+    <script src="../auth.js"></script>
+    <style>
+        .generator-container { text-align: center; background: #222; padding: 20px; border-radius: 8px; }
+        #generate-btn { background-color: #2cbf31; color: white; border: none; padding: 15px 30px; font-size: 1.3em; cursor: pointer; border-radius: 5px; transition: background-color 0.3s; }
+        #generate-btn:hover { background-color: #25a029; }
+        .hidden { display: none; }
+        #list-output { margin-top: 20px; background: #1a1a1a; padding: 15px; border-radius: 5px; text-align: left; }
+        #panda-list { list-style-type: none; padding: 0; }
+        #panda-list li { background: #333; margin-bottom: 8px; padding: 10px; border-radius: 4px; border-left: 4px solid #2cbf31; }
+    </style>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4kochol</title>
+    <link rel="stylesheet" href="../style.css">
+    <script src="../script.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Kalkulator Promili</h1>
+        <div id="user-status"></div>
+    </header>
+    <main>
+        <p>Witaj na /4kochol/! Oblicz szacunkową zawartość alkoholu we krwi. Pamiętaj, że to tylko zabawa i wyniki są przybliżone. Nigdy nie prowadź pojazdów po spożyciu alkoholu!</p>
+        
+        <div class="calculator-container">
+            <h3>Kalkulator BAC (Blood Alcohol Content)</h3>
+            <form id="bac-form">
+                <div class="form-group">
+                    <label for="weight">Twoja waga (kg):</label>
+                    <input type="number" id="weight" min="30" max="200" required>
+                </div>
+                <div class="form-group">
+                    <label for="gender">Płeć:</label>
+                    <select id="gender" required>
+                        <option value="male">Mężczyzna</option>
+                        <option value="female">Kobieta</option>
+                    </select>
+                </div>
+                <div id="drinks-container">
+                    <div class="drink-group">
+                        <label for="drink-type-1">Rodzaj trunku:</label>
+                        <select id="drink-type-1">
+                            <option value="beer">Piwo (5%)</option>
+                            <option value="wine">Wino (12%)</option>
+                            <option value="vodka">Wódka (40%)</option>
+                        </select>
+                        <label for="drink-amount-1">Ilość (ml):</label>
+                        <input type="number" id="drink-amount-1" min="0" value="0">
+                    </div>
+                </div>
+                <button type="button" id="add-drink">Dodaj kolejny trunek</button>
+                <div class="form-group">
+                    <label for="hours">Czas od rozpoczęcia picia (godziny):</label>
+                    <input type="number" id="hours" min="0" value="1" required>
+                </div>
+                <button type="submit">Oblicz</button>
+            </form>
+        </div>
+
+        <div id="result-container" style="display: none;">
+            <h3>Szacowany wynik:</h3>
+            <p id="result-text"></p>
+            <p id="sober-time"></p>
+        </div>
+
+        <a href="../index.html">Powrót do strony głównej</a>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const bacForm = document.getElementById('bac-form');
+            const resultContainer = document.getElementById('result-container');
+            const resultText = document.getElementById('result-text');
+            const soberTime = document.getElementById('sober-time');
+            const addDrinkBtn = document.getElementById('add-drink');
+            const drinksContainer = document.getElementById('drinks-container');
+            let drinkCount = 1;
+
+            addDrinkBtn.addEventListener('click', () => {
+                drinkCount++;
+                const newDrinkGroup = document.createElement('div');
+                newDrinkGroup.classList.add('drink-group');
+                newDrinkGroup.innerHTML = `
+                    <label for="drink-type-${drinkCount}">Rodzaj trunku:</label>
+                    <select id="drink-type-${drinkCount}">
+                        <option value="beer">Piwo (5%)</option>
+                        <option value="wine">Wino (12%)</option>
+                        <option value="vodka">Wódka (40%)</option>
+                    </select>
+                    <label for="drink-amount-${drinkCount}">Ilość (ml):</label>
+                    <input type="number" id="drink-amount-${drinkCount}" min="0" value="0">
+                `;
+                drinksContainer.appendChild(newDrinkGroup);
+            });
+
+            bacForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const weight = parseFloat(document.getElementById('weight').value);
+                const gender = document.getElementById('gender').value;
+                const hours = parseFloat(document.getElementById('hours').value);
+
+                let totalGramsOfAlcohol = 0;
+                for (let i = 1; i <= drinkCount; i++) {
+                    const drinkType = document.getElementById(`drink-type-${i}`).value;
+                    const amount = parseFloat(document.getElementById(`drink-amount-${i}`).value);
+                    
+                    if (amount > 0) {
+                        let alcoholPercentage = 0;
+                        if (drinkType === 'beer') alcoholPercentage = 0.05;
+                        else if (drinkType === 'wine') alcoholPercentage = 0.12;
+                        else if (drinkType === 'vodka') alcoholPercentage = 0.40;
+                        
+                        totalGramsOfAlcohol += amount * alcoholPercentage * 0.789; // 0.789 is the density of ethanol
+                    }
+                }
+
+                if (weight <= 0 || totalGramsOfAlcohol <= 0) {
+                    resultText.textContent = "Proszę podać prawidłową wagę i ilość spożytego alkoholu.";
+                    soberTime.textContent = "";
+                    resultContainer.style.display = 'block';
+                    return;
+                }
+
+                const distributionRatio = gender === 'male' ? 0.7 : 0.6;
+                const bac = (totalGramsOfAlcohol / (weight * 1000 * distributionRatio)) * 1000 - (hours * 0.15);
+                
+                const finalBac = Math.max(0, bac);
+
+                resultText.textContent = `Twoje szacowane stężenie alkoholu we krwi wynosi: ${finalBac.toFixed(2)} ‰ (promili).`;
+
+                if (finalBac > 0) {
+                    const hoursToSober = finalBac / 0.15;
+                    soberTime.textContent = `Szacowany czas potrzebny do wytrzeźwienia: ${hoursToSober.toFixed(1)} godzin.`;
+                } else {
+                    soberTime.textContent = "Jesteś prawdopodobnie trzeźwy/a.";
+                }
+
+                resultContainer.style.display = 'block';
+            });
+        });
+    </script>
+    <script src="../auth.js"></script>
+    <style>
+        /* Dodatkowe style, jeśli potrzebne */
+    </style>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>excluve-rang-dla-bezrobotnych-</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <header>
+        <h1>Elitarny Klub Bezrobotnych</h1>
+        <div id="user-status"></div>
+        <h2>Odbierz swoją Ekskluzywną Rangę!</h2>
+    </header>
+    <main>
+        <p>Masz dość bycia pomijanym? Dołącz do elity! Wypełnij poniższy formularz, aby otrzymać cyfrową, prestiżową rangę, która nic nie znaczy, ale brzmi świetnie.</p>
+        
+        <div class="rank-form-container">
+            <div id="rank-form">
+                <h3>Formularz Aplikacyjny</h3>
+                <div class="form-group">
+                    <label for="nickname">Twój Nick:</label>
+                    <input type="text" id="nickname" placeholder="np. Mistrz Prokrastynacji">
+                </div>
+                <div class="form-group">
+                    <label for="experience">Doświadczenie w bezrobociu (w latach):</label>
+                    <input type="number" id="experience" min="0" value="1">
+                </div>
+                <div class="form-group">
+                    <label for="skills">Wybierz swoje supermoce:</label>
+                    <select id="skills">
+                        <option value="Spanie do południa">Spanie do południa</option>
+                        <option value="Ekspert Netflixa">Ekspert Netflixa</option>
+                        <option value="Czarny pas w narzekaniu">Czarny pas w narzekaniu</option>
+                        <option value="Władca pilota od TV">Władca pilota od TV</option>
+                    </select>
+                </div>
+                <button id="claim-rank-btn">Odbierz Moją Rangę!</button>
+            </div>
+
+            <div id="rank-result" class="hidden">
+                <h3>Gratulacje! Oto Twoja nowa ranga:</h3>
+                <div id="rank-card">
+                    <h4 id="rank-name"></h4>
+                    <p><strong>Użytkownik:</strong> <span id="result-nickname"></span></p>
+                    <p><strong>Staż:</strong> <span id="result-experience"></span> lat doświadczenia</p>
+                    <p><strong>Specjalizacja:</strong> <span id="result-skill"></span></p>
+                    <div class="prestige-bar">
+                        <div id="prestige-level" style="width: 0%;"></div>
+                    </div>
+                    <p class="prestige-text">Poziom Prestiżu</p>
+                </div>
+                <button id="reset-btn">Wypełnij ponownie</button>
+            </div>
+        </div>
+
+        <a href="../index.html">Powrót do strony głównej</a>
+    </main>
+    <script src="../auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const claimBtn = document.getElementById('claim-rank-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const rankForm = document.getElementById('rank-form');
+            const rankResult = document.getElementById('rank-result');
+
+            const ranks = [
+                "Początkujący Leniuch", "Adept Kanapy", "Czeladnik Odkładania", 
+                "Weteran Piżamy", "Mistrz Drzemki", "Arcymag Prokrastynacji", 
+                "Baron Bezrobocia", "Imperator Czasu Wolnego"
+            ];
+
+            // --- Nowa logika integracji z systemem użytkowników ---
+            const session = JSON.parse(sessionStorage.getItem('forum_session'));
+            if (!session) {
+                // Jeśli użytkownik nie jest zalogowany, zablokuj formularz
+                rankForm.innerHTML = '<p style="color: red;">Musisz być zalogowany, aby odebrać rangę.</p><a href="../login.html">Zaloguj się</a>';
+                return; // Zatrzymaj dalsze wykonywanie skryptu
+            }
+            // --- Koniec nowej logiki ---
+
+            claimBtn.addEventListener('click', () => {
+                const nickname = document.getElementById('nickname').value || "Anonimowy Obibok";
+                const experience = parseInt(document.getElementById('experience').value) || 0;
+                const skill = document.getElementById('skills').value;
+
+                let rankIndex = Math.floor(experience / 2);
+                if (rankIndex >= ranks.length) {
+                    rankIndex = ranks.length - 1;
+                }
+                const assignedRank = ranks[rankIndex];
+                const prestige = Math.min((experience / 10) * 100, 100);
+
+                // --- Aktualizacja danych użytkownika w localStorage ---
+                const users = JSON.parse(localStorage.getItem('forum_users')) || [];
+                const userIndex = users.findIndex(u => u.username === session.username);
+                if (userIndex > -1) {
+                    users[userIndex].rank = assignedRank;
+                    users[userIndex].rankExperience = experience;
+                    localStorage.setItem('forum_users', JSON.stringify(users));
+                }
+                // --- Koniec aktualizacji ---
+
+                document.getElementById('rank-name').textContent = assignedRank;
+                document.getElementById('result-nickname').textContent = nickname;
+                document.getElementById('result-experience').textContent = experience;
+                document.getElementById('result-skill').textContent = skill;
+                document.getElementById('prestige-level').style.width = prestige + '%';
+
+                rankForm.classList.add('hidden');
+                rankResult.classList.remove('hidden');
+            });
+
+            resetBtn.addEventListener('click', () => {
+                rankResult.classList.add('hidden');
+                rankForm.classList.remove('hidden');
+                document.getElementById('nickname').value = '';
+                document.getElementById('experience').value = '1';
+            });
+        });
+    </script>
+    <style>
+        .rank-form-container { background: #222; padding: 20px; border-radius: 8px; max-width: 500px; margin: auto; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; }
+        .form-group input, .form-group select { width: 100%; padding: 8px; background: #333; border: 1px solid #555; color: #fff; border-radius: 4px; box-sizing: border-box; }
+        #claim-rank-btn, #reset-btn { background-color: #4CAF50; color: white; border: none; padding: 12px 20px; cursor: pointer; width: 100%; font-size: 1.1em; border-radius: 4px; }
+        #reset-btn { background-color: #f44336; margin-top: 10px; }
+        .hidden { display: none; }
+        #rank-card { background: linear-gradient(145deg, #2a2a2a, #1e1e1e); border: 2px solid #4CAF50; border-radius: 10px; padding: 20px; text-align: center; margin-bottom: 15px; }
+        #rank-name { color: #4CAF50; margin-top: 0; font-size: 1.8em; }
+        .prestige-bar { background: #555; border-radius: 5px; height: 25px; margin-top: 15px; overflow: hidden; }
+        #prestige-level { width: 0%; height: 100%; background: linear-gradient(90deg, #4CAF50, #81C784); transition: width 1s ease-out; }
+        .prestige-text { margin-top: 5px; font-size: 0.9em; color: #ccc; }
+    </style>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>anonimowe-zamawianie-wegla</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <header>
+        <h1>Anonimowe Zamawianie Węgla</h1>
+        <div id="user-status"></div>
+    </header>
+    <main>
+        <p>Potrzebujesz opału, ale cenisz sobie prywatność? Nasz super-bezpieczny system zamówień jest dla Ciebie. Gwarantujemy 100% dyskrecji (niekoniecznie dostawy).</p>
+        
+        <div class="form-container">
+            <h3>Formularz Ultra-Poufnego Zamówienia</h3>
+            <form id="coal-form">
+                <div class="form-group">
+                    <label for="alias">Twój pseudonim (np. "Cienisty Palacz"):</label>
+                    <input type="text" id="alias" required>
+                </div>
+                <div class="form-group">
+                    <label for="amount">Ilość węgla (w "jednostkach"):</label>
+                    <input type="number" id="amount" min="1" max="100" required>
+                </div>
+                <div class="form-group">
+                    <label for="dropoff">Tajne miejsce zrzutu (np. "pod trzecim dębem od lewej"):</label>
+                    <textarea id="dropoff" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="payment">Metoda płatności (tylko gotówka w kopercie):</label>
+                    <select id="payment" required>
+                        <option value="cash">Gotówka w brązowej kopercie</option>
+                        <option value="barter">Wymiana za inne dobra (np. ziemniaki)</option>
+                    </select>
+                </div>
+                <button type="submit">Szyfruj i Wysyłaj Zamówienie</button>
+            </form>
+        </div>
+
+        <div id="status-container" style="display: none;">
+            <h3>Status Operacji:</h3>
+            <p id="status-text"></p>
+            <div class="progress-bar-container">
+                <div class="progress-bar"></div>
+            </div>
+        </div>
+
+        <a href="../index.html">Powrót do strony głównej</a>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const coalForm = document.getElementById('coal-form');
+            const statusContainer = document.getElementById('status-container');
+            const statusText = document.getElementById('status-text');
+            const progressBar = document.querySelector('.progress-bar');
+
+            coalForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const alias = document.getElementById('alias').value;
+                if (!alias) {
+                    alert("Musisz podać pseudonim!");
+                    return;
+                }
+
+                statusContainer.style.display = 'block';
+                progressBar.style.width = '0%';
+                statusText.textContent = "Inicjowanie połączenia z siecią anonimizującą...";
+
+                setTimeout(() => {
+                    progressBar.style.width = '25%';
+                    statusText.textContent = "Szyfrowanie danych zamówienia kluczem kwantowym...";
+                }, 1000);
+
+                setTimeout(() => {
+                    progressBar.style.width = '50%';
+                    statusText.textContent = "Przesyłanie przez 7 proxy i 3 satelity...";
+                }, 2500);
+                
+                setTimeout(() => {
+                    progressBar.style.width = '75%';
+                    statusText.textContent = "Oczekiwanie na potwierdzenie od agenta terenowego 'Węglik'...";
+                }, 4000);
+
+                setTimeout(() => {
+                    progressBar.style.width = '100%';
+                    statusText.innerHTML = `<strong>Zamówienie dla "${alias}" zostało (prawdopodobnie) wysłane.</strong><br>Sprawdzaj regularnie miejsce zrzutu. Nie ponosimy odpowiedzialności za przechwycenie towaru przez wiewiórki.`;
+                    coalForm.reset();
+                }, 6000);
+            });
+        });
+    </script>
+    <script src="../auth.js"></script>
+    <style>
+        /* Dodatkowe style do elementu #user-status */
+        #user-status {
+            font-size: 0.9em;
+            color: #555;
+            margin-top: 10px;
+        }
+    </style>
+</body>
+</html>

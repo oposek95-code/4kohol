@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>lq-bez-akcyzy</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <header>
+        <h1>Domowy Mikser Liquidów v3.0</h1>
+        <div id="user-status"></div>
+        <h2>Twórz własne kompozycje bez zbędnych podatków!</h2>
+    </header>
+    <main>
+        <p>Masz dość płacenia akcyzy? Z naszym rewolucyjnym mikserem online możesz tworzyć własne, unikalne smaki liquidów w zaciszu domowym. Pełna swoboda, zero dodatkowych opłat!</p>
+        
+        <div class="mixer-container">
+            <h3>Panel Miksowania</h3>
+            <div class="controls">
+                <div class="control-group">
+                    <label for="base-flavor">Baza Smakowa:</label>
+                    <select id="base-flavor">
+                        <option value="Truskawka z działki">Truskawka z działki</option>
+                        <option value="Cytryna od sąsiada">Cytryna od sąsiada</option>
+                        <option value="Mięta z doniczki">Mięta z doniczki</option>
+                        <option value="Cola z Biedronki">Cola z Biedronki</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label for="extra-flavor">Dodatkowy Akcent:</label>
+                    <select id="extra-flavor">
+                        <option value="Aromat skoszonej trawy">Aromat skoszonej trawy</option>
+                        <option value="Esencja porannej kawy">Esencja porannej kawy</option>
+                        <option value="Nuta nostalgii">Nuta nostalgii</option>
+                        <option value="Szczypta chaosu">Szczypta chaosu</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label for="power-slider">Moc (0-100%): <span id="power-value">50</span>%</label>
+                    <input type="range" id="power-slider" min="0" max="100" value="50">
+                </div>
+            </div>
+            <button id="mix-btn">Stwórz Mój Liquid!</button>
+
+            <div id="result-container" class="hidden">
+                <h3>Oto Twoja Kompozycja!</h3>
+                <div id="liquid-card">
+                    <h4 id="liquid-name"></h4>
+                    <p><strong>Składniki:</strong> <span id="liquid-ingredients"></span></p>
+                    <p><strong>Moc:</strong> <span id="liquid-power"></span>%</p>
+                    <p class="warning">Pamiętaj, to tylko symulacja. Nie próbuj tego w domu (chyba, że chcesz).</p>
+                </div>
+            </div>
+        </div>
+
+        <a href="../index.html">Powrót do strony głównej</a>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mixBtn = document.getElementById('mix-btn');
+            const resultContainer = document.getElementById('result-container');
+            const powerSlider = document.getElementById('power-slider');
+            const powerValue = document.getElementById('power-value');
+
+            const nameAdjectives = ["Dziki", "Szalony", "Mroźny", "Słoneczny", "Atomowy", "Leśny"];
+            const nameNouns = ["Pocałunek", "Oddech", "Szał", "Spokój", "Wybuch", "Poranek"];
+
+            powerSlider.addEventListener('input', () => {
+                powerValue.textContent = powerSlider.value;
+            });
+
+            mixBtn.addEventListener('click', () => {
+                const baseFlavor = document.getElementById('base-flavor').value;
+                const extraFlavor = document.getElementById('extra-flavor').value;
+                const power = powerSlider.value;
+
+                const randomAdjective = nameAdjectives[Math.floor(Math.random() * nameAdjectives.length)];
+                const randomNoun = nameNouns[Math.floor(Math.random() * nameNouns.length)];
+                const liquidName = `${randomAdjective} ${randomNoun}`;
+
+                document.getElementById('liquid-name').textContent = liquidName;
+                document.getElementById('liquid-ingredients').textContent = `${baseFlavor}, ${extraFlavor}`;
+                document.getElementById('liquid-power').textContent = power;
+
+                resultContainer.classList.remove('hidden');
+                mixBtn.textContent = "Stwórz kolejny!";
+            });
+        });
+    </script>
+    <script src="../auth.js"></script>
+    <style>
+        .mixer-container { background: #2a2a2a; padding: 20px; border-radius: 8px; max-width: 600px; margin: auto; }
+        .controls { display: flex; flex-wrap: wrap; justify-content: space-between; margin-bottom: 20px; }
+        .control-group { flex-basis: 100%; margin-bottom: 15px; }
+        @media (min-width: 600px) {
+            .control-group { flex-basis: 48%; }
+        }
+        .control-group label { display: block; margin-bottom: 5px; color: #ccc; }
+        .control-group select, .control-group input[type="range"] { width: 100%; padding: 8px; background: #333; border: 1px solid #555; color: #fff; border-radius: 4px; }
+        #mix-btn { background-color: #8e44ad; color: white; border: none; padding: 12px 20px; cursor: pointer; width: 100%; font-size: 1.1em; border-radius: 4px; }
+        .hidden { display: none; }
+        #result-container { margin-top: 20px; }
+        #liquid-card { background: linear-gradient(145deg, #3a3a3a, #2c2c2c); border: 2px solid #8e44ad; border-radius: 10px; padding: 20px; text-align: center; }
+        #liquid-name { color: #8e44ad; margin-top: 0; font-size: 1.8em; }
+        .warning { font-style: italic; color: #aaa; font-size: 0.9em; margin-top: 15px; }
+    </style>
+</body>
+</html>

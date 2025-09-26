@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>nukowanie-dc</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <header>
+        <h1>Discord Server Nuker 9000</h1>
+        <div id="user-status"></div>
+        <h2>Zaawansowane narzędzie do... porządkowania serwerów.</h2>
+    </header>
+    <main>
+        <p>Wprowadź token bota i ID serwera, aby rozpocząć proces "optymalizacji". Narzędzie jest w 100% bezpieczne i nie wykonuje żadnych realnych akcji na platformie Discord.</p>
+        
+        <div class="nuker-container">
+            <div class="form-group">
+                <label for="bot-token">Token Bota:</label>
+                <input type="password" id="bot-token" value="Ni3_p0d4m_Sw0j3g0_T0k3nu">
+            </div>
+            <div class="form-group">
+                <label for="server-id">ID Serwera:</label>
+                <input type="text" id="server-id" value="123456789012345678">
+            </div>
+            <button id="nuke-btn">Rozpocznij Optymalizację</button>
+
+            <div id="nuke-console" class="hidden">
+                <h3>Logi z Konsoli:</h3>
+                <div id="console-output">
+                    <!-- Logs will appear here -->
+                </div>
+            </div>
+        </div>
+
+        <a href="../index.html">Powrót do strony głównej</a>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const nukeBtn = document.getElementById('nuke-btn');
+            const nukeConsole = document.getElementById('nuke-console');
+            const consoleOutput = document.getElementById('console-output');
+            const botTokenInput = document.getElementById('bot-token');
+            const serverIdInput = document.getElementById('server-id');
+
+            const fakeLogs = [
+                { text: "Inicjowanie połączenia z API Discorda...", color: "#fff" },
+                { text: "Pomyślnie uwierzytelniono token.", color: "#2ecc71" },
+                { text: "Znaleziono serwer: 'Serwer Testowy Graczy'", color: "#fff" },
+                { text: "Usuwanie kanału: #general...", color: "#e67e22" },
+                { text: "Usuwanie kanału: #pogaduchy...", color: "#e67e22" },
+                { text: "Usuwanie kanału: #memy...", color: "#e67e22" },
+                { text: "Tworzenie 100 kanałów o nazwie 'zostales-zoptymalizowany'...", color: "#3498db" },
+                { text: "Banowanie użytkownika: @Admin...", color: "#e74c3c" },
+                { text: "Banowanie użytkownika: @Moderator...", color: "#e74c3c" },
+                { text: "Wysyłanie wiadomości masowej: 'Pozdrowienia od zespołu optymalizacyjnego!'", color: "#9b59b6" },
+                { text: "Zmiana nazwy serwera na: 'Zoptymalizowany Serwer'.", color: "#3498db" },
+                { text: "Operacja zakończona pomyślnie.", color: "#2ecc71" }
+            ];
+
+            nukeBtn.addEventListener('click', () => {
+                if (!botTokenInput.value || !serverIdInput.value) {
+                    alert("Wprowadź token i ID serwera!");
+                    return;
+                }
+
+                nukeBtn.disabled = true;
+                nukeBtn.textContent = "Optymalizacja w toku...";
+                nukeConsole.classList.remove('hidden');
+                consoleOutput.innerHTML = '';
+
+                let logIndex = 0;
+                const interval = setInterval(() => {
+                    if (logIndex < fakeLogs.length) {
+                        const logEntry = document.createElement('p');
+                        logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${fakeLogs[logIndex].text}`;
+                        logEntry.style.color = fakeLogs[logIndex].color;
+                        consoleOutput.appendChild(logEntry);
+                        consoleOutput.scrollTop = consoleOutput.scrollHeight;
+                        logIndex++;
+                    } else {
+                        clearInterval(interval);
+                        nukeBtn.textContent = "Zakończono";
+                    }
+                }, 600);
+            });
+        });
+    </script>
+    <script src="../auth.js"></script>
+    <style>
+        .nuker-container { background: #36393f; padding: 25px; border-radius: 8px; max-width: 700px; margin: auto; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; color: #b9bbbe; }
+        .form-group input { width: 100%; padding: 10px; background: #202225; border: 1px solid #1a1b1e; color: #dcddde; border-radius: 3px; box-sizing: border-box; }
+        #nuke-btn { background-color: #7289da; color: white; border: none; padding: 12px 20px; cursor: pointer; width: 100%; font-size: 1.1em; border-radius: 3px; transition: background-color 0.2s; }
+        #nuke-btn:disabled { background-color: #4e5d94; cursor: not-allowed; }
+        .hidden { display: none; }
+        #nuke-console { margin-top: 20px; }
+        #console-output { background: #2f3136; height: 250px; overflow-y: scroll; border: 1px solid #202225; border-radius: 5px; padding: 10px; font-family: 'Courier New', Courier, monospace; font-size: 0.9em; }
+        #console-output p { margin: 0 0 5px; }
+    </style>
+</body>
+</html>

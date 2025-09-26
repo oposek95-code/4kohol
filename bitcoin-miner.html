@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bitcoin-miner</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <header>
+        <h1>Bitcoin Miner Tycoon 2025</h1>
+        <div id="user-status"></div>
+    </header>
+    <main>
+        <p>Zostań potentatem kryptowalut! Klikaj, aby kopać Bitcoiny i ulepszać swoją koparkę. Czy zostaniesz milionerem?</p>
+        
+        <div class="miner-container">
+            <div class="stats">
+                <p>Saldo: <span id="balance">0.00000000</span> BTC</p>
+                <p>Moc na klik: <span id="power">1</span> Satoshi</p>
+            </div>
+            
+            <div class="click-area">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1200px-Bitcoin.svg.png" alt="Bitcoin" id="bitcoin-img">
+                <p id="click-feedback">+1</p>
+            </div>
+
+            <div class="upgrades">
+                <h3>Ulepszenia</h3>
+                <button id="upgrade-power-btn">Ulepsz moc kliknięcia (Koszt: <span id="upgrade-power-cost">100</span> Satoshi)</button>
+                <button id="upgrade-autoclicker-btn">Kup Autoclicker (Koszt: <span id="autoclicker-cost">5000</span> Satoshi)</button>
+                <p>Autoclicker: <span id="autoclicker-level">0</span> (0 Satoshi/s)</p>
+            </div>
+        </div>
+
+        <a href="../index.html">Powrót do strony głównej</a>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let balance = 0; // in Satoshis
+            let power = 1;
+            let upgradePowerCost = 100;
+            let autoclickerLevel = 0;
+            let autoclickerCost = 5000;
+            let autoclickerPower = 0;
+
+            const balanceEl = document.getElementById('balance');
+            const powerEl = document.getElementById('power');
+            const bitcoinImg = document.getElementById('bitcoin-img');
+            const clickFeedbackEl = document.getElementById('click-feedback');
+            
+            const upgradePowerBtn = document.getElementById('upgrade-power-btn');
+            const upgradePowerCostEl = document.getElementById('upgrade-power-cost');
+
+            const upgradeAutoclickerBtn = document.getElementById('upgrade-autoclicker-btn');
+            const autoclickerCostEl = document.getElementById('autoclicker-cost');
+            const autoclickerLevelEl = document.getElementById('autoclicker-level');
+
+            const SATOSHIS_IN_BTC = 100_000_000;
+
+            function updateDisplay() {
+                balanceEl.textContent = (balance / SATOSHIS_IN_BTC).toFixed(8);
+                powerEl.textContent = power;
+                upgradePowerCostEl.textContent = upgradePowerCost;
+                autoclickerCostEl.textContent = autoclickerCost;
+                autoclickerLevelEl.textContent = `${autoclickerLevel} (${autoclickerPower} Satoshi/s)`;
+            }
+
+            bitcoinImg.addEventListener('click', () => {
+                balance += power;
+                updateDisplay();
+                
+                // Animation
+                bitcoinImg.classList.add('clicked');
+                clickFeedbackEl.textContent = `+${power}`;
+                clickFeedbackEl.classList.add('show');
+
+                setTimeout(() => {
+                    bitcoinImg.classList.remove('clicked');
+                }, 100);
+                setTimeout(() => {
+                    clickFeedbackEl.classList.remove('show');
+                }, 500);
+            });
+
+            upgradePowerBtn.addEventListener('click', () => {
+                if (balance >= upgradePowerCost) {
+                    balance -= upgradePowerCost;
+                    power += Math.ceil(power * 0.5);
+                    upgradePowerCost = Math.ceil(upgradePowerCost * 1.8);
+                    updateDisplay();
+                } else {
+                    alert('Za mało Satoshi!');
+                }
+            });
+
+            upgradeAutoclickerBtn.addEventListener('click', () => {
+                if (balance >= autoclickerCost) {
+                    balance -= autoclickerCost;
+                    autoclickerLevel++;
+                    autoclickerPower = Math.ceil(autoclickerLevel * autoclickerLevel * 2.5);
+                    autoclickerCost = Math.ceil(autoclickerCost * 2.5);
+                    updateDisplay();
+                } else {
+                    alert('Za mało Satoshi!');
+                }
+            });
+
+            setInterval(() => {
+                if (autoclickerPower > 0) {
+                    balance += autoclickerPower;
+                    updateDisplay();
+                }
+            }, 1000);
+
+            updateDisplay();
+        });
+    </script>
+    <script src="../auth.js"></script>
+    <style>
+        .miner-container { text-align: center; }
+        .stats { margin-bottom: 20px; background: #222; padding: 10px; border-radius: 5px; }
+        .click-area { position: relative; margin-bottom: 20px; }
+        #bitcoin-img { width: 150px; cursor: pointer; transition: transform 0.1s ease; }
+        #bitcoin-img.clicked { transform: scale(0.9); }
+        #click-feedback { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 2em; color: #FFD700; opacity: 0; transition: opacity 0.5s ease, transform 0.5s ease; pointer-events: none; }
+        #click-feedback.show { opacity: 1; transform: translate(-50%, -150%); }
+        .upgrades { background: #222; padding: 15px; border-radius: 5px; }
+        .upgrades button { display: block; width: 100%; padding: 10px; margin-bottom: 10px; background-color: #f7931a; border: none; color: #fff; cursor: pointer; }
+    </style>
+</body>
+</html>

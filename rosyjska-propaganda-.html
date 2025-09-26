@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rosyjska-propaganda-</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <header>
+        <h1>Generator Wiadomości Dnia</h1>
+        <div id="user-status"></div>
+        <h2>Oficjalne komunikaty prosto z... wiarygodnego źródła.</h2>
+    </header>
+    <main>
+        <p>Masz problem z wymyśleniem nagłówka, który przyciągnie uwagę? Nasz generator stworzy dla Ciebie idealną wiadomość, opartą na sprawdzonych wzorcach. Wyniki są losowe i nie mają na celu obrażania nikogo (chyba że przypadkiem).</p>
+        
+        <div class="generator-container">
+            <button id="generate-btn">Wygeneruj Nową Wiadomość</button>
+            
+            <div id="news-output" class="hidden">
+                <h3>Nagłówek Dnia:</h3>
+                <h2 id="news-headline"></h2>
+                <p id="news-source"></p>
+            </div>
+        </div>
+
+        <a href="../index.html">Powrót do strony głównej</a>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const generateBtn = document.getElementById('generate-btn');
+            const newsOutput = document.getElementById('news-output');
+            const headlineEl = document.getElementById('news-headline');
+            const sourceEl = document.getElementById('news-source');
+
+            const subjects = ["Zachodni imperialiści", "Lokalni bohaterowie", "Nasi sportowcy", "Spiseg", "Tradycyjne wartości", "Nowoczesna technologia"];
+            const actions = ["ponownie próbują zdestabilizować", "odnoszą spektakularny sukces", "bronią honoru ojczyzny", "demaskują kłamstwa", "są zagrożone przez", "osiągają nowy poziom"];
+            const objects = ["nasz wspaniały kraj.", "globalny porządek.", "serca milionów.", "zgniłe elity.", "przyszłość naszych dzieci.", "plany wrogów."];
+            const sources = ["Wiarygodne Źródło", "Agencja Informacyjna 'Prawda'", "Głos Ludu", "Niezależny Obserwator", "Komitet Centralny ds. Faktów"];
+
+            const getRandomElement = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+            generateBtn.addEventListener('click', () => {
+                const subject = getRandomElement(subjects);
+                const action = getRandomElement(actions);
+                const object = getRandomElement(objects);
+                const source = getRandomElement(sources);
+
+                const headline = `${subject} ${action} ${object}`;
+                
+                headlineEl.textContent = headline.charAt(0).toUpperCase() + headline.slice(1);
+                sourceEl.textContent = `Źródło: ${source}`;
+
+                newsOutput.classList.remove('hidden');
+            });
+        });
+    </script>
+    <script src="../auth.js"></script>
+    <style>
+        .generator-container { text-align: center; background: #330000; padding: 20px; border-radius: 8px; border: 2px solid #660000; }
+        #generate-btn { background-color: #cc0000; color: #FFD700; border: 2px solid #FFD700; padding: 15px 30px; font-size: 1.3em; cursor: pointer; border-radius: 5px; font-family: 'Times New Roman', Times, serif; text-transform: uppercase; }
+        .hidden { display: none; }
+        #news-output { margin-top: 20px; background: #1a1a1a; padding: 15px; border-radius: 5px; text-align: center; }
+        #news-headline { font-family: 'Georgia', serif; color: #FFD700; }
+        #news-source { font-style: italic; color: #ccc; margin-top: 10px; }
+    </style>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>link-do-pobrania-huzuni-3.5-vip-maltiego</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <header>
+        <h1>Pobierz Huzuni 3.5 VIP (Edycja Maltiego)</h1>
+        <div id="user-status"></div>
+        <h2>Uwolnij Pełen Potencjał!</h2>
+    </header>
+    <main>
+        <p>Witaj na jedynej autoryzowanej stronie pobierania legendarnego klienta Huzuni 3.5 VIP. Gwarantowane działanie, zero wirusów (naprawdę!).</p>
+        
+        <div class="download-container">
+            <div class="file-info">
+                <p><strong>Nazwa pliku:</strong> huzuni_vip_final_legit_nowirus.exe</p>
+                <p><strong>Rozmiar:</strong> 420.69 MB</p>
+                <p><strong>Wersja:</strong> 3.5 (build Maltiego)</p>
+            </div>
+            
+            <button id="download-btn">Pobierz Teraz</button>
+
+            <div id="download-progress" class="hidden">
+                <h3>Pobieranie w toku...</h3>
+                <p id="status-text">Inicjowanie połączenia z serwerem premium...</p>
+                <div class="progress-bar-container">
+                    <div id="progress-bar" style="width: 0%;"></div>
+                </div>
+                <p id="percentage-text">0%</p>
+            </div>
+        </div>
+
+        <a href="../index.html">Powrót do strony głównej</a>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const downloadBtn = document.getElementById('download-btn');
+            const downloadProgress = document.getElementById('download-progress');
+            const progressBar = document.getElementById('progress-bar');
+            const statusText = document.getElementById('status-text');
+            const percentageText = document.getElementById('percentage-text');
+
+            const fakeStatuses = [
+                "Omijanie antywirusa...",
+                "Dekodowanie sygnatur VIP...",
+                "Ładowanie skryptów aimbot.js...",
+                "Kompresowanie pakietów killaura...",
+                "Przekierowywanie przez serwery na Kajmanach...",
+                "Prawie gotowe, czyszczenie logów...",
+                "Błąd krytyczny: Wykryto zbyt dużą moc. Redukowanie do 99%...",
+                "Pobieranie zakończone!"
+            ];
+
+            downloadBtn.addEventListener('click', () => {
+                downloadBtn.classList.add('hidden');
+                downloadProgress.classList.remove('hidden');
+
+                let progress = 0;
+                let statusIndex = 0;
+
+                const interval = setInterval(() => {
+                    progress += Math.random() * 5;
+                    if (progress > 100) {
+                        progress = 100;
+                    }
+                    
+                    progressBar.style.width = progress + '%';
+                    percentageText.textContent = Math.floor(progress) + '%';
+
+                    if (statusIndex < fakeStatuses.length && progress > (statusIndex + 1) * (100 / fakeStatuses.length)) {
+                        statusText.textContent = fakeStatuses[statusIndex];
+                        statusIndex++;
+                    }
+
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        statusText.textContent = "Pobieranie zakończone! Plik został zapisany w C:\\Windows\\System32. Uruchom jako administrator.";
+                        statusText.style.color = "#4CAF50";
+                    }
+                }, 400);
+            });
+        });
+    </script>
+    <script src="../auth.js"></script>
+    <style>
+        .download-container { background: #1c1c1c; padding: 25px; border-radius: 8px; text-align: center; border: 1px solid #333; }
+        .file-info { background: #2a2a2a; padding: 15px; border-radius: 5px; margin-bottom: 20px; text-align: left; }
+        .file-info p { margin: 5px 0; }
+        #download-btn { background-color: #007bff; color: white; border: none; padding: 15px 30px; font-size: 1.3em; cursor: pointer; border-radius: 5px; transition: background-color 0.3s; }
+        #download-btn:hover { background-color: #0056b3; }
+        .hidden { display: none; }
+        #download-progress { margin-top: 20px; }
+        .progress-bar-container { background: #333; border-radius: 5px; overflow: hidden; margin: 15px 0; }
+        #progress-bar { width: 0; height: 25px; background: linear-gradient(90deg, #007bff, #00d4ff); transition: width 0.3s ease-in-out; }
+        #status-text { color: #ccc; font-style: italic; }
+        #percentage-text { font-size: 1.2em; font-weight: bold; }
+    </style>
+</body>
+</html>

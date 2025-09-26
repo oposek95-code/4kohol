@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bankomat-przy-kasynie</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <header>
+        <h1>Bankomat przy Kasynie</h1>
+        <div id="user-status"></div>
+    </header>
+    <main>
+        <p>Informacje o najbliższych i najbezpieczniejszych bankomatach w okolicy kasyn. Unikaj opłat i niebezpiecznych miejsc.</p>
+        
+        <div class="post-form-container">
+            <h3>Napisz nowy post</h3>
+            <form id="new-post-form">
+                <textarea id="post-content" placeholder="Treść posta..." required></textarea>
+                <button type="submit">Wyślij</button>
+            </form>
+        </div>
+
+        <div id="posts-container">
+            <h3>Posty</h3>
+        </div>
+
+        <a href="../index.html">Powrót do strony głównej</a>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const postsContainer = document.getElementById('posts-container');
+            const postForm = document.getElementById('new-post-form');
+            const postContentInput = document.getElementById('post-content');
+            const storageKey = `posts_${window.location.pathname}`;
+
+            const loadPosts = () => {
+                const posts = JSON.parse(localStorage.getItem(storageKey)) || [];
+                postsContainer.innerHTML = '<h3>Posty</h3>';
+                posts.forEach(post => renderPost(post));
+            };
+
+            const renderPost = (post, isEditing = false) => {
+                const existingPostElement = postsContainer.querySelector(`.post[data-post-id='${post.id}']`);
+                const postElement = existingPostElement || document.createElement('div');
+                postElement.innerHTML = ''; // Clear existing content
+
+                postElement.classList.add('post');
+                postElement.dataset.postId = post.id;
+
+                const postHeader = document.createElement('div');
+                postHeader.classList.add('post-header');
+
+                const postInfo = document.createElement('span');
+                postInfo.textContent = `Post #${post.id} | ${new Date(post.timestamp).toLocaleString('pl-PL')}`;
+
+                const actionsWrapper = document.createElement('div');
+                actionsWrapper.classList.add('post-actions');
+
+                if (isEditing) {
+                    const saveBtn = document.createElement('button');
+                    saveBtn.classList.add('edit-post-btn');
+                    saveBtn.textContent = 'Zapisz';
+                    saveBtn.onclick = () => savePost(post.id);
+                    actionsWrapper.appendChild(saveBtn);
+                } else {
+                    const actionsBtn = document.createElement('button');
+                    actionsBtn.classList.add('actions-btn');
+                    actionsBtn.innerHTML = '&#8942;'; // Three vertical dots
+                    actionsBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        actionsWrapper.classList.toggle('active');
+                    };
+
+                    const actionsMenu = document.createElement('div');
+                    actionsMenu.classList.add('actions-menu');
+
+                    const editBtn = document.createElement('button');
+                    editBtn.textContent = 'Edytuj';
+                    editBtn.onclick = () => toggleEdit(post.id);
+
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.classList.add('delete-post-btn');
+                    deleteBtn.textContent = 'Usuń';
+                    deleteBtn.onclick = () => deletePost(post.id);
+
+                    actionsMenu.appendChild(editBtn);
+                    actionsMenu.appendChild(deleteBtn);
+                    actionsWrapper.appendChild(actionsBtn);
+                    actionsWrapper.appendChild(actionsMenu);
+                }
+
+                postHeader.appendChild(postInfo);
+                postHeader.appendChild(actionsWrapper);
+
+                const postContentDiv = document.createElement('div');
+                postContentDiv.classList.add('post-content');
+
+                if (isEditing) {
+                    const editTextArea = document.createElement('textarea');
+                    editTextArea.value = post.content;
+                    postContentDiv.appendChild(editTextArea);
+                } else {
+                    postContentDiv.textContent = post.content;
+                }
+
+                postElement.appendChild(postHeader);
+                postElement.appendChild(postContentDiv);
+
+                if (!existingPostElement) {
+                    postsContainer.appendChild(postElement);
+                }
+            };
+
+            const toggleEdit = (postId) => {
+                const posts = JSON.parse(localStorage.getItem(storageKey)) || [];
+                const post = posts.find(p => p.id === postId);
+                if (post) {
+                    renderPost(post, true);
+                }
+            };
+
+            const savePost = (postId) => {
+                const postElement = postsContainer.querySelector(`.post[data-post-id='${postId}']`);
+                const editTextArea = postElement.querySelector('textarea');
+                const newContent = editTextArea.value.trim();
+
+                if (newContent) {
+                    let posts = JSON.parse(localStorage.getItem(storageKey)) || [];
+                    const postIndex = posts.findIndex(p => p.id === postId);
+                    if (postIndex > -1) {
+                        posts[postIndex].content = newContent;
+                        localStorage.setItem(storageKey, JSON.stringify(posts));
+                        renderPost(posts[postIndex], false);
+                    }
+                }
+            };
+
+            const deletePost = (postId) => {
+                let posts = JSON.parse(localStorage.getItem(storageKey)) || [];
+                posts = posts.filter(p => p.id !== postId);
+                
+                posts.forEach((p, index) => { p.id = index + 1; });
+
+                localStorage.setItem(storageKey, JSON.stringify(posts));
+                loadPosts();
+            };
+
+            postForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const content = postContentInput.value.trim();
+                if (!content) return;
+
+                const posts = JSON.parse(localStorage.getItem(storageKey)) || [];
+                const newPost = {
+                    id: posts.length > 0 ? Math.max(...posts.map(p => p.id)) + 1 : 1,
+                    content: content,
+                    timestamp: new Date().toISOString()
+                };
+
+                posts.push(newPost);
+                localStorage.setItem(storageKey, JSON.stringify(posts));
+                
+                renderPost(newPost);
+                postContentInput.value = '';
+            });
+
+            loadPosts();
+        });
+    </script>
+    <script src="../auth.js"></script>
+    <style>
+        /* Add any additional styles here */
+    </style>
+</body>
+</html>

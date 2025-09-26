@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>marihuana-na-zamowienie</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <header>
+        <h1>Zielona Przesyłka - Twoje Źródło Relaksu</h1>
+        <div id="user-status"></div>
+        <h2>Zamów prosto z (wirtualnego) pola!</h2>
+    </header>
+    <main>
+        <p>Potrzebujesz chwili wytchnienia? Nasz w pełni zautomatyzowany i dyskretny system pozwoli Ci zamówić najwyższej jakości... herbatę ziołową. Oczywiście, że herbatę. Co innego mielibyśmy na myśli?</p>
+        
+        <div class="order-container">
+            <div id="order-form">
+                <h3>Formularz Zamówienia</h3>
+                <div class="form-group">
+                    <label for="strain">Wybierz "Odmianę Herbaty":</label>
+                    <select id="strain">
+                        <option value="Kanapowy Spokój">Kanapowy Spokój</option>
+                        <option value="Śmiechawa-Hihawa">Śmiechawa-Hihawa</option>
+                        <option value="Kreatywny Lot">Kreatywny Lot</option>
+                        <option value="Filozoficzny Kamień">Filozoficzny Kamień</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="quantity">Ilość (w gramach... herbaty):</label>
+                    <input type="number" id="quantity" min="1" value="5">
+                </div>
+                <div class="form-group">
+                    <label for="delivery-method">Metoda Dostawy:</label>
+                    <select id="delivery-method">
+                        <option value="Gołąb pocztowy">Gołąb pocztowy</option>
+                        <option value="Dron-niewidka">Dron-niewidka</option>
+                        <option value="Przesyłka w pudełku po pizzy">Przesyłka w pudełku po pizzy</option>
+                    </select>
+                </div>
+                <button id="order-btn">Złóż Zamówienie</button>
+            </div>
+
+            <div id="order-status" class="hidden">
+                <h3>Status Twojego Zamówienia</h3>
+                <p id="status-text">Przygotowywanie Twojej przesyłki...</p>
+                <div class="progress-bar-container">
+                    <div id="progress-bar" style="width: 0%;"></div>
+                </div>
+                <p id="eta-text"></p>
+            </div>
+        </div>
+
+        <a href="../index.html">Powrót do strony głównej</a>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const orderBtn = document.getElementById('order-btn');
+            const orderForm = document.getElementById('order-form');
+            const orderStatus = document.getElementById('order-status');
+            const progressBar = document.getElementById('progress-bar');
+            const statusText = document.getElementById('status-text');
+            const etaText = document.getElementById('eta-text');
+
+            const statuses = [
+                "Sprawdzanie legalności... (wszystko w porządku, to herbata)",
+                "Ważenie z dokładnością do źdźbła...",
+                "Pakowanie w biodegradowalny materiał maskujący...",
+                "Przekazywanie kurierowi w przebraniu ogrodnika...",
+                "Omijanie ciekawskich sąsiadów...",
+                "Przesyłka jest już prawie u Ciebie!"
+            ];
+
+            orderBtn.addEventListener('click', () => {
+                orderForm.classList.add('hidden');
+                orderStatus.classList.remove('hidden');
+
+                let progress = 0;
+                let statusIndex = 0;
+
+                const interval = setInterval(() => {
+                    progress += Math.random() * 8;
+                    if (progress > 100) {
+                        progress = 100;
+                    }
+                    
+                    progressBar.style.width = progress + '%';
+                    
+                    const remainingTime = Math.round((100 - progress) * 0.2);
+                    etaText.textContent = `Szacowany czas dostawy: ${remainingTime} minut.`;
+
+                    if (statusIndex < statuses.length && progress > (statusIndex + 1) * (100 / statuses.length)) {
+                        statusText.textContent = statuses[statusIndex];
+                        statusIndex++;
+                    }
+
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        statusText.textContent = "Dostarczono! Sprawdź pod wycieraczką.";
+                        statusText.style.color = "#2ecc71";
+                        etaText.textContent = "Miłego... parzenia herbaty!";
+                    }
+                }, 500);
+            });
+        });
+    </script>
+    <script src="../auth.js"></script>
+    <style>
+        .order-container { background: #2c3e50; padding: 25px; border-radius: 8px; max-width: 500px; margin: auto; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; color: #ecf0f1; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; background: #34495e; border: 1px solid #2c3e50; color: #ecf0f1; border-radius: 4px; box-sizing: border-box; }
+        #order-btn { background-color: #27ae60; color: white; border: none; padding: 12px 20px; cursor: pointer; width: 100%; font-size: 1.1em; border-radius: 4px; }
+        .hidden { display: none; }
+        #order-status { margin-top: 20px; text-align: center; }
+        .progress-bar-container { background: #34495e; border-radius: 5px; overflow: hidden; margin: 15px 0; }
+        #progress-bar { width: 0; height: 25px; background: linear-gradient(90deg, #27ae60, #2ecc71); transition: width 0.4s ease-in-out; }
+        #status-text { color: #ecf0f1; font-style: italic; min-height: 20px; }
+        #eta-text { color: #bdc3c7; }
+    </style>
+</body>
+</html>

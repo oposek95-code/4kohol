@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pirackie-anime</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <header>
+        <h1>Oglądaj Anime Bez Granic</h1>
+        <div id="user-status"></div>
+        <h2>Twoje centrum nieoficjalnych tłumaczeń i rzadkich serii.</h2>
+    </header>
+    <main>
+        <p>Witaj w podziemnym archiwum anime. Znajdziesz tu wszystko, czego nie ma na oficjalnych platformach. Pamiętaj, że oglądasz na własną odpowiedzialność!</p>
+        
+        <div class="search-container">
+            <input type="text" id="search-bar" placeholder="Wpisz tytuł anime, którego szukasz...">
+            <button id="search-btn">Szukaj</button>
+        </div>
+
+        <div id="results-container">
+            <!-- Search results will appear here -->
+        </div>
+
+        <a href="../index.html">Powrót do strony głównej</a>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchBtn = document.getElementById('search-btn');
+            const searchBar = document.getElementById('search-bar');
+            const resultsContainer = document.getElementById('results-container');
+
+            const fakeAnimeDatabase = {
+                "legend of the galactic heroes": { title: "Legend of the Galactic Heroes (1988)", desc: "Fanserowskie tłumaczenie z japońskiego VHS. Jakość 240p. 110 odcinków.", sources: ["PirateBay", "Stary Chomik", "Forum fanów z 2003"] },
+                "jojoy": { title: "JoJo's Bizarre Adventure: Phantom Blood (Film z 2007)", desc: "Zaginiony film, odnaleziony na dyskietce. Tylko 16 minut, bez dźwięku.", sources: ["Tajemniczy link na 4chanie"] },
+                "shrek": { title: "Shrek-chan's Bizarre Adventure", desc: "Fanowska animacja cross-over. Dostępna tylko w formacie .rmvb.", sources: ["Blog na GeoCities"] },
+                "default": { title: "Nie znaleziono", desc: "Niestety, nawet w naszych przepastnych archiwach nie ma tego, czego szukasz. Spróbuj wpisać 'shrek'.", sources: [] }
+            };
+
+            const displayResults = (key) => {
+                const anime = fakeAnimeDatabase[key] || fakeAnimeDatabase["default"];
+                resultsContainer.innerHTML = `
+                    <div class="anime-card">
+                        <h3>${anime.title}</h3>
+                        <p>${anime.desc}</p>
+                        <div class="sources">
+                            <h4>Dostępne źródła (symulacja):</h4>
+                            <ul>
+                                ${anime.sources.map(s => `<li>${s} <button class="download-link-btn">Pobierz</button></li>`).join('') || '<li>Brak źródeł</li>'}
+                            </ul>
+                        </div>
+                    </div>
+                `;
+                
+                document.querySelectorAll('.download-link-btn').forEach(button => {
+                    button.addEventListener('click', () => {
+                        alert('Rozpoczynanie pobierania... (żart). To tylko symulacja. Żadne pliki nie są pobierane.');
+                    });
+                });
+            };
+
+            searchBtn.addEventListener('click', () => {
+                const query = searchBar.value.toLowerCase();
+                if (query.includes("legend")) {
+                    displayResults("legend of the galactic heroes");
+                } else if (query.includes("jojo")) {
+                    displayResults("jojoy");
+                } else if (query.includes("shrek")) {
+                    displayResults("shrek");
+                } else {
+                    displayResults("default");
+                }
+            });
+            
+            searchBar.addEventListener('keyup', (event) => {
+                if (event.key === 'Enter') {
+                    searchBtn.click();
+                }
+            });
+        });
+    </script>
+    <script src="../auth.js"></script>
+    <style>
+        .search-container { display: flex; margin-bottom: 20px; }
+        #search-bar { flex-grow: 1; padding: 10px; font-size: 1em; background: #333; border: 1px solid #555; color: #fff; }
+        #search-btn { background-color: #e50914; color: white; border: none; padding: 0 20px; cursor: pointer; }
+        
+        .anime-card { background: #222; padding: 20px; border-radius: 8px; }
+        .anime-card h3 { margin-top: 0; color: #e50914; }
+        .sources { margin-top: 15px; }
+        .sources ul { list-style: none; padding: 0; }
+        .sources li { background: #333; padding: 10px; margin-bottom: 5px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; }
+        .download-link-btn { background: #555; color: #fff; border: none; padding: 5px 10px; cursor: pointer; }
+    </style>
+</body>
+</html>
