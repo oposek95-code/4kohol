@@ -169,11 +169,11 @@
         </div>
 
         <div id="gameMenu">
-            <div class="game-choice" onclick="showGame('slotMachineGame')">
+            <div class="game-choice" id="slot-choice">
                 <img src="https://placehold.co/200x150/AF0A0F/white?text=Jednoręki%0A-Bandyta" alt="Jednoręki Bandyta">
                 <p>Jednoręki Bandyta</p>
             </div>
-            <div class="game-choice" onclick="showGame('coinFlipGame')">
+            <div class="game-choice" id="coin-choice">
                 <img src="https://placehold.co/200x150/002266/white?text=Rzut%0AMonetą" alt="Rzut Monetą">
                 <p>Rzut Monetą</p>
             </div>
@@ -189,8 +189,8 @@
             <div class="game-controls">
                 <label for="slotBet">Stawka:</label>
                 <input type="number" id="slotBet" value="10" min="1">
-                <button onclick="spin()">Zakręć!</button>
-                <button class="back-button" onclick="showMenu()">Powrót do menu</button>
+                <button id="spin-btn">Zakręć!</button>
+                <button class="back-button" id="slot-back-btn">Powrót do menu</button>
             </div>
             <p id="slotResult"></p>
         </div>
@@ -206,9 +206,9 @@
             <div class="game-controls">
                 <label for="coinBet">Stawka:</label>
                 <input type="number" id="coinBet" value="10" min="1">
-                <button id="flipHeadsBtn" onclick="flipCoin('orzeł')">Orzeł</button>
-                <button id="flipTailsBtn" onclick="flipCoin('reszka')">Reszka</button>
-                <button class="back-button" onclick="showMenu()">Powrót do menu</button>
+                <button id="flipHeadsBtn">Orzeł</button>
+                <button id="flipTailsBtn">Reszka</button>
+                <button class="back-button" id="coin-back-btn">Powrót do menu</button>
             </div>
             <p id="coinResult"></p>
         </div>
@@ -216,267 +216,178 @@
         <a href="../index.html">Powrót do strony głównej</a>
     </main>
     <script>
-        let balance = 1000;
-        const balanceElem = document.getElementById('balance');
-        const gameMenu = document.getElementById('gameMenu');
-        const slotMachineGame = document.getElementById('slotMachineGame');
-        const coinFlipGame = document.getElementById('coinFlipGame');
-
-        function showGame(gameId) {
-            gameMenu.style.display = 'none';
-            document.getElementById(gameId).style.display = 'block';
-        }
-
-        function showMenu() {
-            gameMenu.style.display = 'flex';
-            slotMachineGame.style.display = 'none';
-            coinFlipGame.style.display = 'none';
-        }
-
-        // Slot Machine
-        const slotSymbols = ['🍒', '🍋', '🔔', '🍉', '⭐', '7️⃣'];
-        const slot1 = document.getElementById('slot1');
-        const slot2 = document.getElementById('slot2');
-        const slot3 = document.getElementById('slot3');
-        const slotResultElem = document.getElementById('slotResult');
-
-        function spin() {
-            const bet = parseInt(document.getElementById('slotBet').value);
-            if (bet > balance) {
-                slotResultElem.textContent = "Nie masz wystarczająco środków!";
-                slotResultElem.style.color = 'red';
-                return;
-            }
-
-            balance -= bet;
-            updateBalance();
-
-            let spins = 0;
-            const interval = setInterval(() => {
-                slot1.textContent = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
-                slot2.textContent = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
-                slot3.textContent = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
-                spins++;
-                if (spins > 15) {
-                    clearInterval(interval);
-                    checkWin(bet);
+            // Wait for auth.js to load
+            document.addEventListener('DOMContentLoaded', () => {
+                // Get current user session
+                const session = JSON.parse(sessionStorage.getItem('forum_session'));
+                if (!session) {
+                    window.location.href = '../login.html';
+                    return;
                 }
-            }, 100);
-        }
 
-        function checkWin(bet) {
-            const s1 = slot1.textContent;
-            const s2 = slot2.textContent;
-            const s3 = slot3.textContent;
+                const USERS_KEY = 'forum_users';
+                const getUsers = () => JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+                const saveUsers = (users) => localStorage.setItem(USERS_KEY, JSON.stringify(users));
 
-            let winnings = 0;
-            if (s1 === s2 && s2 === s3) {
-                if (s1 === '7️⃣') winnings = bet * 100;
-                else if (s1 === '⭐') winnings = bet * 50;
-                else winnings = bet * 10;
-            } else if (s1 === s2 || s2 === s3 || s1 === s3) {
-                winnings = bet * 2;
-            }
-
-            if (winnings > 0) {
-                balance += winnings;
-                slotResultElem.textContent = `Wygrałeś ${winnings} PLN!`;
-                slotResultElem.style.color = 'green';
-            } else {
-                slotResultElem.textContent = "Spróbuj ponownie!";
-                slotResultElem.style.color = 'red';
-            }
-            updateBalance();
-        }
-
-        // Coin Flip
-        const coinResultElem = document.getElementById('coinResult');
-        const coin = document.getElementById('coin');
-        const flipHeadsBtn = document.getElementById('flipHeadsBtn');
-        const flipTailsBtn = document.getElementById('flipTailsBtn');
-
-        function flipCoin(choice) {
-            const bet = parseInt(document.getElementById('coinBet').value);
-            if (bet > balance) {
-                coinResultElem.textContent = "Nie masz wystarczająco środków!";
-                coinResultElem.style.color = 'red';
-                return;
-            }
-
-            balance -= bet;
-            updateBalance();
-            coinResultElem.textContent = '';
-            flipHeadsBtn.disabled = true;
-            flipTailsBtn.disabled = true;
-
-            // Reset animation
-            coin.classList.remove('flipping-heads', 'flipping-tails');
-            // This forces a reflow, allowing the animation to be re-applied
-            void coin.offsetWidth; 
-
-            const result = Math.random() < 0.5 ? 'orzeł' : 'reszka';
-
-            if (result === 'orzeł') {
-                coin.classList.add('flipping-heads');
-            } else {
-                coin.classList.add('flipping-tails');
-            }
-
-            setTimeout(() => {
-                if (choice === result) {
-                    balance += bet * 2;
-                    coinResultElem.textContent = `Wypadł ${result}! Wygrałeś ${bet * 2} PLN!`;
-                    coinResultElem.style.color = 'green';
-                } else {
-                    coinResultElem.textContent = `Wypadł ${result}. Przegrałeś.`;
-                    coinResultElem.style.color = 'red';
+                const currentUser = getUsers().find(u => u.username === session.username);
+                if (!currentUser) {
+                    alert('Błąd: Użytkownik nie znaleziony.');
+                    window.location.href = '../login.html';
+                    return;
                 }
+
+                let balance = currentUser.plnBalance || 1000;
+                const balanceElem = document.getElementById('balance');
+                const gameMenu = document.getElementById('gameMenu');
+                const slotMachineGame = document.getElementById('slotMachineGame');
+                const coinFlipGame = document.getElementById('coinFlipGame');
+
+                function updateUserBalance(newBalance) {
+                    balance = newBalance;
+                    const users = getUsers();
+                    const userIndex = users.findIndex(u => u.username === session.username);
+                    if (userIndex !== -1) {
+                        users[userIndex].plnBalance = balance;
+                        saveUsers(users);
+                    }
+                    updateBalance();
+                }
+
+                function showGame(gameId) {
+                    gameMenu.style.display = 'none';
+                    document.getElementById(gameId).style.display = 'block';
+                }
+
+                function showMenu() {
+                    gameMenu.style.display = 'flex';
+                    slotMachineGame.style.display = 'none';
+                    coinFlipGame.style.display = 'none';
+                }
+
+                // Slot Machine
+                const slotSymbols = ['🍒', '🍋', '🔔', '🍉', '⭐', '7️⃣'];
+                const slot1 = document.getElementById('slot1');
+                const slot2 = document.getElementById('slot2');
+                const slot3 = document.getElementById('slot3');
+                const slotResultElem = document.getElementById('slotResult');
+
+                function spin() {
+                    const bet = parseInt(document.getElementById('slotBet').value);
+                    if (bet > balance) {
+                        slotResultElem.textContent = "Nie masz wystarczająco środków!";
+                        slotResultElem.style.color = 'red';
+                        return;
+                    }
+
+                    balance -= bet;
+                    updateUserBalance(balance);
+
+                    let spins = 0;
+                    const interval = setInterval(() => {
+                        slot1.textContent = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
+                        slot2.textContent = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
+                        slot3.textContent = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
+                        spins++;
+                        if (spins > 15) {
+                            clearInterval(interval);
+                            checkWin(bet);
+                        }
+                    }, 100);
+                }
+
+                function checkWin(bet) {
+                    const s1 = slot1.textContent;
+                    const s2 = slot2.textContent;
+                    const s3 = slot3.textContent;
+
+                    let winnings = 0;
+                    if (s1 === s2 && s2 === s3) {
+                        if (s1 === '7️⃣') winnings = bet * 100;
+                        else if (s1 === '⭐') winnings = bet * 50;
+                        else winnings = bet * 10;
+                    } else if (s1 === s2 || s2 === s3 || s1 === s3) {
+                        winnings = bet * 2;
+                    }
+
+                    if (winnings > 0) {
+                        balance += winnings;
+                        slotResultElem.textContent = `Wygrałeś ${winnings} PLN!`;
+                        slotResultElem.style.color = 'green';
+                    } else {
+                        slotResultElem.textContent = "Spróbuj ponownie!";
+                        slotResultElem.style.color = 'red';
+                    }
+                    updateUserBalance(balance);
+                }
+
+                // Coin Flip
+                const coinResultElem = document.getElementById('coinResult');
+                const coin = document.getElementById('coin');
+                const flipHeadsBtn = document.getElementById('flipHeadsBtn');
+                const flipTailsBtn = document.getElementById('flipTailsBtn');
+
+                function flipCoin(choice) {
+                    const bet = parseInt(document.getElementById('coinBet').value);
+                    if (bet > balance) {
+                        coinResultElem.textContent = "Nie masz wystarczająco środków!";
+                        coinResultElem.style.color = 'red';
+                        return;
+                    }
+
+                    balance -= bet;
+                    updateUserBalance(balance);
+                    coinResultElem.textContent = '';
+                    flipHeadsBtn.disabled = true;
+                    flipTailsBtn.disabled = true;
+
+                    // Reset animation
+                    coin.classList.remove('flipping-heads', 'flipping-tails');
+                    // This forces a reflow, allowing the animation to be re-applied
+                    void coin.offsetWidth; 
+
+                    const result = Math.random() < 0.5 ? 'orzeł' : 'reszka';
+
+                    if (result === 'orzeł') {
+                        coin.classList.add('flipping-heads');
+                    } else {
+                        coin.classList.add('flipping-tails');
+                    }
+
+                    setTimeout(() => {
+                        if (choice === result) {
+                            balance += bet * 2;
+                            coinResultElem.textContent = `Wypadł ${result}! Wygrałeś ${bet * 2} PLN!`;
+                            coinResultElem.style.color = 'green';
+                        } else {
+                            coinResultElem.textContent = `Wypadł ${result}. Przegrałeś.`;
+                            coinResultElem.style.color = 'red';
+                        }
+                        updateUserBalance(balance);
+                        flipHeadsBtn.disabled = false;
+                        flipTailsBtn.disabled = false;
+                    }, 2000); // Must match animation duration
+                }
+
+                function updateBalance() {
+                    balanceElem.textContent = balance;
+                }
+
+                // Add event listeners for game choices
+                document.getElementById('slot-choice').addEventListener('click', () => showGame('slotMachineGame'));
+                document.getElementById('coin-choice').addEventListener('click', () => showGame('coinFlipGame'));
+
+                // Add event listeners for buttons
+                document.getElementById('spin-btn').addEventListener('click', spin);
+                document.getElementById('slot-back-btn').addEventListener('click', showMenu);
+
+                document.getElementById('flipHeadsBtn').addEventListener('click', () => flipCoin('orzeł'));
+                document.getElementById('flipTailsBtn').addEventListener('click', () => flipCoin('reszka'));
+                document.getElementById('coin-back-btn').addEventListener('click', showMenu);
+
                 updateBalance();
-                flipHeadsBtn.disabled = false;
-                flipTailsBtn.disabled = false;
-            }, 2000); // Must match animation duration
-        }
+            });
 
-        function updateBalance() {
-            balanceElem.textContent = balance;
-        }
-
-        // Posting system
-        const postsContainer = document.getElementById('posts-container');
-        const postForm = document.getElementById('new-post-form');
-        const postContentInput = document.getElementById('post-content');
-        const storageKey = `posts_${window.location.pathname}`;
-
-        const loadPosts = () => {
-            const posts = JSON.parse(localStorage.getItem(storageKey)) || [];
-            postsContainer.innerHTML = '<h3>Posty</h3>';
-            posts.forEach(post => renderPost(post));
-        };
-
-        const renderPost = (post, isEditing = false) => {
-            const existingPostElement = postsContainer.querySelector(`.post[data-post-id='${post.id}']`);
-            const postElement = existingPostElement || document.createElement('div');
-            postElement.innerHTML = ''; // Clear existing content
-
-            postElement.classList.add('post');
-            postElement.dataset.postId = post.id;
-
-            const postHeader = document.createElement('div');
-            postHeader.classList.add('post-header');
-
-                const postInfo = document.createElement('span');
-                postInfo.textContent = `Post #${post.id} | ${new Date(post.timestamp).toLocaleString('pl-PL')}`;
-
-                const actionsWrapper = document.createElement('div');
-                actionsWrapper.classList.add('post-actions');
-
-                if (isEditing) {
-                    const saveBtn = document.createElement('button');
-                    saveBtn.classList.add('edit-post-btn');
-                    saveBtn.textContent = 'Zapisz';
-                    saveBtn.onclick = () => savePost(post.id);
-                    actionsWrapper.appendChild(saveBtn);
-                } else {
-                    const actionsBtn = document.createElement('button');
-                    actionsBtn.classList.add('actions-btn');
-                    actionsBtn.innerHTML = '&#8942;'; // Three vertical dots
-                    actionsBtn.onclick = (e) => {
-                        e.stopPropagation();
-                        actionsWrapper.classList.toggle('active');
-                    };
-
-                    const actionsMenu = document.createElement('div');
-                    actionsMenu.classList.add('actions-menu');
-
-                    const editBtn = document.createElement('button');
-                    editBtn.textContent = 'Edytuj';
-                    editBtn.onclick = () => toggleEdit(post.id);
-
-                    const deleteBtn = document.createElement('button');
-                    deleteBtn.classList.add('delete-post-btn');
-                    deleteBtn.textContent = 'Usuń';
-                    deleteBtn.onclick = () => deletePost(post.id);
-
-                    actionsMenu.appendChild(editBtn);
-                    actionsMenu.appendChild(deleteBtn);
-                    actionsWrapper.appendChild(actionsBtn);
-                    actionsWrapper.appendChild(actionsMenu);
-                }
-
-                postHeader.appendChild(postInfo);
-                postHeader.appendChild(actionsWrapper);            const postContentDiv = document.createElement('div');
-            postContentDiv.classList.add('post-content');
-
-            if (isEditing) {
-                const editTextArea = document.createElement('textarea');
-                editTextArea.value = post.content;
-                postContentDiv.appendChild(editTextArea);
-            } else {
-                postContentDiv.textContent = post.content;
-            }
-
-            postElement.appendChild(postHeader);
-            postElement.appendChild(postContentDiv);
-
-            if (!existingPostElement) {
-                postsContainer.appendChild(postElement);
-            }
-        };
-
-        const toggleEdit = (postId) => {
-            const posts = JSON.parse(localStorage.getItem(storageKey)) || [];
-            const post = posts.find(p => p.id === postId);
-            if (post) {
-                renderPost(post, true);
-            }
-        };
-
-        const savePost = (postId) => {
-            const postElement = postsContainer.querySelector(`.post[data-post-id='${postId}']`);
-            const editTextArea = postElement.querySelector('textarea');
-            const newContent = editTextArea.value.trim();
-
-            if (newContent) {
-                let posts = JSON.parse(localStorage.getItem(storageKey)) || [];
-                const postIndex = posts.findIndex(p => p.id === postId);
-                if (postIndex > -1) {
-                    posts[postIndex].content = newContent;
-                    localStorage.setItem(storageKey, JSON.stringify(posts));
-                    renderPost(posts[postIndex], false);
-                }
-            }
-        };
-
-        const deletePost = (postId) => {
-            let posts = JSON.parse(localStorage.getItem(storageKey)) || [];
-            posts = posts.filter(p => p.id !== postId);
-            
-            posts.forEach((p, index) => { p.id = index + 1; });
-
-            localStorage.setItem(storageKey, JSON.stringify(posts));
-            loadPosts();
-        };
-
-        postForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const content = postContentInput.value.trim();
-            if (!content) return;
-
-            const posts = JSON.parse(localStorage.getItem(storageKey)) || [];
-            const newPost = {
-                id: posts.length > 0 ? Math.max(...posts.map(p => p.id)) + 1 : 1,
-                content: content,
-                timestamp: new Date().toISOString()
-            };
-
-            posts.push(newPost);
-            localStorage.setItem(storageKey, JSON.stringify(posts));
-            
-            renderPost(newPost);
-            postContentInput.value = '';
-        });
-
-        loadPosts();
+        // Posting system removed as not applicable to casino page
     </script>
     <script src="../auth.js"></script>
     <style>

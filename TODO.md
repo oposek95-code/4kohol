@@ -1,0 +1,4 @@
+- [x] Enhance style.css: Add gradients, deeper shadows, fade-in animation for page load, better colors, 3D effects for cards
+- [x] Add page load animation in script.js or CSS
+- [x] Improve overall aesthetics with more depth (shadows, transforms)
+- [ ] Test animations and aesthetics on pages
