@@ -122,6 +122,44 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // Obsługa edycji i usuwania boardów
+    const setupBoardActions = () => {
+        document.querySelectorAll('.post-actions .edit-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const postElement = e.target.closest('.post');
+                const boardName = postElement.dataset.board;
+                handleEditBoard(boardName, postElement);
+            });
+        });
+
+        document.querySelectorAll('.post-actions .delete-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const postElement = e.target.closest('.post');
+                const boardName = postElement.dataset.board;
+                handleDeleteBoard(boardName, postElement);
+            });
+        });
+    };
+
+    const handleEditBoard = (boardName, postElement) => {
+        const currentContent = postElement.querySelector('.post-content a').textContent;
+        const newContent = prompt(`Edytuj treść dla boardu ${boardName}:`, currentContent);
+        if (newContent !== null && newContent.trim() !== '') {
+            // Update in localStorage (if we were storing content)
+            // For now, just update the displayed text
+            postElement.querySelector('.post-content a').textContent = newContent;
+            // Optionally, update the href if the board name changes
+            // postElement.querySelector('.post-content a').href = `b/${boardName}.html`;
+        }
+    };
+
+    const handleDeleteBoard = (boardName, postElement) => {
+        if (confirm(`Czy na pewno chcesz usunąć board ${boardName}?`)) {
+            postElement.remove();
+            // Optionally, remove from localStorage or a backend
+        }
+    };
+
     // Konfiguracja przycisków logowania/rejestracji
     const setupAuthButtons = () => {
         const loginBtn = document.getElementById('login-btn');
@@ -144,4 +182,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Inicjalizacja
     checkLoginStatus();
+    setupBoardActions();
 });

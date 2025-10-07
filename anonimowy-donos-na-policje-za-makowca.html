@@ -87,11 +87,25 @@
 
                     actionsMenu.appendChild(editBtn);
                     actionsMenu.appendChild(deleteBtn);
-                    actionsWrapper.appendChild(actionsBtn);
                     actionsWrapper.appendChild(actionsMenu);
                 }
 
+                const editBtn = document.createElement('button');
+                editBtn.classList.add('edit-post-btn');
+                editBtn.textContent = 'Edytuj';
+                editBtn.onclick = () => toggleEdit(post.id);
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.classList.add('delete-post-btn');
+                deleteBtn.textContent = 'Usuń';
+                deleteBtn.onclick = () => deletePost(post.id);
+
+                actionsWrapper.appendChild(editBtn);
+                actionsWrapper.appendChild(deleteBtn);
+
                 postHeader.appendChild(postInfo);
+
+
                 postHeader.appendChild(actionsWrapper);
 
                 const postContentDiv = document.createElement('div');

@@ -193,15 +193,19 @@ main {
     max-height: 0;
     opacity: 0;
     transform: translateY(-20px);
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    transition: all 0.5s ease-in-out;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    filter: blur(8px);
+    transform-origin: top;
 }
 
 .hidden-boards-card.visible {
-    max-height: 800px;
+    max-height: 800px; /* Adjust as needed */
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scaleY(1);
     padding: 15px;
+    filter: blur(0);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
 }
 
 .hidden-boards-card h3 {
@@ -216,6 +220,61 @@ main {
     white-space: nowrap;
     word-break: keep-all;
     overflow: visible;
+}
+
+/* Post styles */
+.post {
+    background: #FFFFFF;
+    border: 1px solid #E0E0E0;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: all 0.2s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.post:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+.post-content a {
+    font-size: 1.1em;
+    color: #1a1a2e;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.post-content a:hover {
+    color: #34345C;
+    text-decoration: underline;
+}
+
+.post-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    justify-content: flex-end;
+}
+
+.post-actions button {
+    background-color: #34345C;
+    color: #FFFFFF;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 500;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.post-actions button:hover {
+    background-color: #AF0A0F;
+    transform: translateY(-1px);
 }
 
 /* Tabela adminów */
